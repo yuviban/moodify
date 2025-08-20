@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import "../styles/Room.css";
 
-const socket = io("https://moodify-api-ol0l.onrender.com");
+const socket = io("https://moodify-api-ol0l.onrender.com"); // change port if different
 
 const Room = () => {
   const location = useLocation();
@@ -16,9 +16,8 @@ const Room = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const audioRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(true); // start muted for autoplay
+  const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
   const chatEndRef = useRef(null);
 
   // Redirect if mood not selected
@@ -26,7 +25,7 @@ const Room = () => {
     if (!mood) navigate("/joinroom");
   }, [mood, navigate]);
 
-  // Scroll chat to bottom
+  // Scroll chat to bottom on new message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -37,7 +36,6 @@ const Room = () => {
     socket.emit("joinRoom", mood);
 
     socket.on("newSong", (songData) => {
-      console.log("Received new song:", songData);
       setSong(songData);
       playFromTimestamp(songData);
     });
@@ -52,63 +50,25 @@ const Room = () => {
     };
   }, [mood]);
 
-  // Play song with limited seek to 5 seconds
+  // Play song from backend timestamp
   const playFromTimestamp = (songData) => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
 
-    const backendURL = "https://moodify-api-ol0l.onrender.com";
-    const songURL = `${backendURL}${encodeURI(songData.url)}`;
-    audio.src = songURL;
-
-    // Debug logs
-    console.log("Audio ref after setting src:", audioRef.current);
-    console.log("Audio src set to:", audio.src);
-
-    audio.onloadedmetadata = () => {
-      setDuration(audio.duration);
-
-      // Limit seek to max 5 seconds to avoid buffering delay
-      const elapsed = (Date.now() - new Date(songData.startTime).getTime()) / 1000;
-      audio.currentTime = Math.min(elapsed, 5);
-
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          console.log("Autoplay blocked, waiting for user interaction:", err);
-        });
-      }
-    };
+    audio.src = `https://moodify-api-ol0l.onrender.com${songData.url}`;
+    audio.currentTime = Math.max((Date.now() - new Date(songData.startTime).getTime()) / 1000, 0);
+    audio.play().catch((err) => console.log("Autoplay blocked:", err));
   };
 
-  // Progress updater with console logs
+  // Update progress bar
   useEffect(() => {
     const interval = setInterval(() => {
       if (audioRef.current && song) {
         setProgress(audioRef.current.currentTime);
-        console.log("Audio currentTime:", audioRef.current.currentTime);
-        console.log("Audio src:", audioRef.current.src);
       }
     }, 500);
     return () => clearInterval(interval);
   }, [song]);
-
-  // First click anywhere un-mutes audio for autoplay
-  useEffect(() => {
-    const handleFirstClick = () => {
-      if (audioRef.current) {
-        audioRef.current.muted = false;
-        setIsMuted(false);
-        const playPromise = audioRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((err) => console.log("Error playing on first click:", err));
-        }
-      }
-      document.removeEventListener("click", handleFirstClick);
-    };
-    document.addEventListener("click", handleFirstClick);
-    return () => document.removeEventListener("click", handleFirstClick);
-  }, []);
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -116,10 +76,10 @@ const Room = () => {
     socket.emit("sendMessage", {
       mood,
       message: input,
-      username,
+      username, // send real username
     });
 
-    setInput("");
+    setInput(""); // clear input
   };
 
   return (
@@ -128,24 +88,43 @@ const Room = () => {
         {/* Music Player */}
         <div className="music-player">
           <h2>
-            {mood === "happy" ? "😊" : mood === "chill" ? "😎" : mood === "sad" ? "😔" : ""}{" "}
+            {mood === "happy" ? "😊"
+              : mood === "chill" ? "😎"
+                : mood === "sad" ? "😔"
+                  : ""}{" "}
             {mood.charAt(0).toUpperCase() + mood.slice(1)} Room
           </h2>
+
 
           {song ? (
             <>
               <p>Now Playing: {song.name}</p>
               <audio ref={audioRef} controls={false} muted={isMuted} />
+              <button
+                onClick={() => {
+                  if (audioRef.current) {
+                    audioRef.current.muted = !audioRef.current.muted;
+                    setIsMuted(audioRef.current.muted);
+                  }
+                }}
+              >
+                {isMuted ? "Unmute" : "Mute"}
+              </button>
               <div className="progress-bar">
                 <div
                   className="progress-fill"
-                  style={{ width: duration ? `${(progress / duration) * 100}%` : "0%" }}
+                  style={{
+                    width: audioRef.current && audioRef.current.duration
+                      ? `${(progress / audioRef.current.duration) * 100}%`
+                      : "0%",
+                  }}
                 />
               </div>
               <p>
-                {Math.floor(progress / 60)}:{("0" + Math.floor(progress % 60)).slice(-2)} /{" "}
-                {duration
-                  ? `${Math.floor(duration / 60)}:${("0" + Math.floor(duration % 60)).slice(-2)}`
+                {Math.floor(progress / 60)}:
+                {("0" + Math.floor(progress % 60)).slice(-2)} /{" "}
+                {audioRef.current
+                  ? `${Math.floor(audioRef.current.duration / 60)}:${("0" + Math.floor(audioRef.current.duration % 60)).slice(-2)}`
                   : "0:00"}
               </p>
             </>
