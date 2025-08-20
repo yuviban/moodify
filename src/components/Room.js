@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import "../styles/Room.css";
 
-const socket = io("https://moodify-api-ol0l.onrender.com"); // change port if different
+const socket = io("https://moodify-api-ol0l.onrender.com");
 
 const Room = () => {
   const location = useLocation();
@@ -18,6 +18,7 @@ const Room = () => {
   const audioRef = useRef(null);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
   const chatEndRef = useRef(null);
 
   // Redirect if mood not selected
@@ -25,7 +26,7 @@ const Room = () => {
     if (!mood) navigate("/joinroom");
   }, [mood, navigate]);
 
-  // Scroll chat to bottom on new message
+  // Scroll chat to bottom
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -50,17 +51,24 @@ const Room = () => {
     };
   }, [mood]);
 
-  // Play song from backend timestamp
+  // Play song and handle metadata
   const playFromTimestamp = (songData) => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
 
     audio.src = `https://moodify-api-ol0l.onrender.com${songData.url}`;
-    audio.currentTime = Math.max((Date.now() - new Date(songData.startTime).getTime()) / 1000, 0);
-    audio.play().catch((err) => console.log("Autoplay blocked:", err));
+
+    audio.onloadedmetadata = () => {
+      setDuration(audio.duration);
+      audio.currentTime = Math.max(
+        (Date.now() - new Date(songData.startTime).getTime()) / 1000,
+        0
+      );
+      audio.play().catch((err) => console.log("Autoplay blocked:", err));
+    };
   };
 
-  // Update progress bar
+  // Update progress
   useEffect(() => {
     const interval = setInterval(() => {
       if (audioRef.current && song) {
@@ -76,10 +84,10 @@ const Room = () => {
     socket.emit("sendMessage", {
       mood,
       message: input,
-      username, // send real username
+      username,
     });
 
-    setInput(""); // clear input
+    setInput("");
   };
 
   return (
@@ -88,13 +96,9 @@ const Room = () => {
         {/* Music Player */}
         <div className="music-player">
           <h2>
-            {mood === "happy" ? "😊"
-              : mood === "chill" ? "😎"
-                : mood === "sad" ? "😔"
-                  : ""}{" "}
+            {mood === "happy" ? "😊" : mood === "chill" ? "😎" : mood === "sad" ? "😔" : ""}{" "}
             {mood.charAt(0).toUpperCase() + mood.slice(1)} Room
           </h2>
-
 
           {song ? (
             <>
@@ -114,17 +118,14 @@ const Room = () => {
                 <div
                   className="progress-fill"
                   style={{
-                    width: audioRef.current && audioRef.current.duration
-                      ? `${(progress / audioRef.current.duration) * 100}%`
-                      : "0%",
+                    width: duration ? `${(progress / duration) * 100}%` : "0%",
                   }}
                 />
               </div>
               <p>
-                {Math.floor(progress / 60)}:
-                {("0" + Math.floor(progress % 60)).slice(-2)} /{" "}
-                {audioRef.current
-                  ? `${Math.floor(audioRef.current.duration / 60)}:${("0" + Math.floor(audioRef.current.duration % 60)).slice(-2)}`
+                {Math.floor(progress / 60)}:{("0" + Math.floor(progress % 60)).slice(-2)} /{" "}
+                {duration
+                  ? `${Math.floor(duration / 60)}:${("0" + Math.floor(duration % 60)).slice(-2)}`
                   : "0:00"}
               </p>
             </>
