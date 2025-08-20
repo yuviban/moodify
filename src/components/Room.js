@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import "../styles/Room.css";
 
-// Connect to backend
 const socket = io("https://moodify-api-ol0l.onrender.com");
 
 const Room = () => {
@@ -17,7 +16,7 @@ const Room = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const audioRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
+  const [isMuted, setIsMuted] = useState(true); // start muted for autoplay
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const chatEndRef = useRef(null);
@@ -53,7 +52,7 @@ const Room = () => {
     };
   }, [mood]);
 
-  // Play song with encoding and autoplay-safe
+  // Play song with autoplay-safe logic
   const playFromTimestamp = (songData) => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
@@ -62,40 +61,54 @@ const Room = () => {
     const songURL = `${backendURL}${encodeURI(songData.url)}`;
     audio.src = songURL;
 
-    // Debug: log audio ref and src
+    // Debug logs
     console.log("Audio ref after setting src:", audioRef.current);
     console.log("Audio src set to:", audio.src);
 
     audio.onloadedmetadata = () => {
       setDuration(audio.duration);
 
-      // Calculate elapsed time from song startTime
+      // Limit seek to max 5 seconds ahead to avoid buffering delay
       const elapsed = (Date.now() - new Date(songData.startTime).getTime()) / 1000;
-      audio.currentTime = Math.max(elapsed, 0);
+      audio.currentTime = Math.min(elapsed, 5);
 
-      // Try to play (may be blocked)
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch((err) => {
-          console.log("Autoplay blocked, wait for user interaction:", err);
+          console.log("Autoplay blocked, waiting for user interaction:", err);
         });
       }
     };
   };
 
-  // Update progress and debug audio
+  // Progress updater with console logs
   useEffect(() => {
     const interval = setInterval(() => {
       if (audioRef.current && song) {
         setProgress(audioRef.current.currentTime);
-
-        // Debug: log audio ref and current src
-        console.log("Audio ref during progress update:", audioRef.current);
-        console.log("Audio current src:", audioRef.current.src);
+        console.log("Audio currentTime:", audioRef.current.currentTime);
+        console.log("Audio src:", audioRef.current.src);
       }
     }, 500);
     return () => clearInterval(interval);
   }, [song]);
+
+  // First click anywhere un-mutes audio for autoplay
+  useEffect(() => {
+    const handleFirstClick = () => {
+      if (audioRef.current) {
+        audioRef.current.muted = false;
+        setIsMuted(false);
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => console.log("Error playing on first click:", err));
+        }
+      }
+      document.removeEventListener("click", handleFirstClick);
+    };
+    document.addEventListener("click", handleFirstClick);
+    return () => document.removeEventListener("click", handleFirstClick);
+  }, []);
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -107,22 +120,6 @@ const Room = () => {
     });
 
     setInput("");
-  };
-
-  const handleMuteToggle = () => {
-    if (!audioRef.current) return;
-    audioRef.current.muted = !audioRef.current.muted;
-    setIsMuted(audioRef.current.muted);
-
-    // Play audio if unmuted
-    if (!audioRef.current.muted) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          console.log("Play error after unmute:", err);
-        });
-      }
-    }
   };
 
   return (
@@ -139,15 +136,10 @@ const Room = () => {
             <>
               <p>Now Playing: {song.name}</p>
               <audio ref={audioRef} controls={false} muted={isMuted} />
-              <button onClick={handleMuteToggle}>
-                {isMuted ? "Unmute" : "Mute"}
-              </button>
               <div className="progress-bar">
                 <div
                   className="progress-fill"
-                  style={{
-                    width: duration ? `${(progress / duration) * 100}%` : "0%",
-                  }}
+                  style={{ width: duration ? `${(progress / duration) * 100}%` : "0%" }}
                 />
               </div>
               <p>
