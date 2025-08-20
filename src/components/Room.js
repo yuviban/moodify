@@ -52,7 +52,7 @@ const Room = () => {
     };
   }, [mood]);
 
-  // Play song with autoplay-safe logic
+  // Play song with limited seek to 5 seconds
   const playFromTimestamp = (songData) => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
@@ -68,7 +68,7 @@ const Room = () => {
     audio.onloadedmetadata = () => {
       setDuration(audio.duration);
 
-      // Limit seek to max 5 seconds ahead to avoid buffering delay
+      // Limit seek to max 5 seconds to avoid buffering delay
       const elapsed = (Date.now() - new Date(songData.startTime).getTime()) / 1000;
       audio.currentTime = Math.min(elapsed, 5);
 
