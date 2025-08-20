@@ -62,7 +62,9 @@ const Room = () => {
     const songURL = `${backendURL}${encodeURI(songData.url)}`;
     audio.src = songURL;
 
-    console.log("Playing song URL:", songURL);
+    // Debug: log audio ref and src
+    console.log("Audio ref after setting src:", audioRef.current);
+    console.log("Audio src set to:", audio.src);
 
     audio.onloadedmetadata = () => {
       setDuration(audio.duration);
@@ -81,11 +83,15 @@ const Room = () => {
     };
   };
 
-  // Update progress
+  // Update progress and debug audio
   useEffect(() => {
     const interval = setInterval(() => {
       if (audioRef.current && song) {
         setProgress(audioRef.current.currentTime);
+
+        // Debug: log audio ref and current src
+        console.log("Audio ref during progress update:", audioRef.current);
+        console.log("Audio current src:", audioRef.current.src);
       }
     }, 500);
     return () => clearInterval(interval);
