@@ -17,7 +17,7 @@ const Room = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const audioRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const chatEndRef = useRef(null);
@@ -53,29 +53,29 @@ const Room = () => {
     };
   }, [mood]);
 
-  // Play song with absolute URL
+  // Play song with encoding and autoplay-safe
   const playFromTimestamp = (songData) => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
 
     const backendURL = "https://moodify-api-ol0l.onrender.com";
-    const songURL = songData.url.startsWith("http")
-      ? songData.url
-      : `${backendURL}${songData.url}`;
+    const songURL = `${backendURL}${encodeURI(songData.url)}`;
+    audio.src = songURL;
 
     console.log("Playing song URL:", songURL);
-    audio.src = songURL;
 
     audio.onloadedmetadata = () => {
       setDuration(audio.duration);
 
+      // Calculate elapsed time from song startTime
       const elapsed = (Date.now() - new Date(songData.startTime).getTime()) / 1000;
       audio.currentTime = Math.max(elapsed, 0);
 
+      // Try to play (may be blocked)
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch((err) => {
-          console.log("Autoplay blocked, waiting for user interaction:", err);
+          console.log("Autoplay blocked, wait for user interaction:", err);
         });
       }
     };
@@ -103,6 +103,22 @@ const Room = () => {
     setInput("");
   };
 
+  const handleMuteToggle = () => {
+    if (!audioRef.current) return;
+    audioRef.current.muted = !audioRef.current.muted;
+    setIsMuted(audioRef.current.muted);
+
+    // Play audio if unmuted
+    if (!audioRef.current.muted) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.log("Play error after unmute:", err);
+        });
+      }
+    }
+  };
+
   return (
     <div className="room-container" style={{ backgroundImage: `url(${bg})` }}>
       <div className="room-box">
@@ -117,14 +133,7 @@ const Room = () => {
             <>
               <p>Now Playing: {song.name}</p>
               <audio ref={audioRef} controls={false} muted={isMuted} />
-              <button
-                onClick={() => {
-                  if (audioRef.current) {
-                    audioRef.current.muted = !audioRef.current.muted;
-                    setIsMuted(audioRef.current.muted);
-                  }
-                }}
-              >
+              <button onClick={handleMuteToggle}>
                 {isMuted ? "Unmute" : "Mute"}
               </button>
               <div className="progress-bar">
