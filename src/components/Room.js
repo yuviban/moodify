@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import "../styles/Room.css";
 
+// Connect to backend
 const socket = io("https://moodify-api-ol0l.onrender.com");
 
 const Room = () => {
@@ -37,6 +38,7 @@ const Room = () => {
     socket.emit("joinRoom", mood);
 
     socket.on("newSong", (songData) => {
+      console.log("Received new song:", songData);
       setSong(songData);
       playFromTimestamp(songData);
     });
@@ -51,20 +53,31 @@ const Room = () => {
     };
   }, [mood]);
 
-  // Play song and handle metadata
+  // Play song with absolute URL
   const playFromTimestamp = (songData) => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
 
-    audio.src = `https://moodify-api-ol0l.onrender.com${songData.url}`;
+    const backendURL = "https://moodify-api-ol0l.onrender.com";
+    const songURL = songData.url.startsWith("http")
+      ? songData.url
+      : `${backendURL}${songData.url}`;
+
+    console.log("Playing song URL:", songURL);
+    audio.src = songURL;
 
     audio.onloadedmetadata = () => {
       setDuration(audio.duration);
-      audio.currentTime = Math.max(
-        (Date.now() - new Date(songData.startTime).getTime()) / 1000,
-        0
-      );
-      audio.play().catch((err) => console.log("Autoplay blocked:", err));
+
+      const elapsed = (Date.now() - new Date(songData.startTime).getTime()) / 1000;
+      audio.currentTime = Math.max(elapsed, 0);
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.log("Autoplay blocked, waiting for user interaction:", err);
+        });
+      }
     };
   };
 
