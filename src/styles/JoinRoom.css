@@ -1,0 +1,140 @@
+
+
+.joinroom-container {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', 'Poppins', sans-serif;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.joinroom-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.45); /* subtle dark overlay for mood */
+  z-index: 0;
+}
+
+.joinroom-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  z-index: 1;
+  color: #ffe6e6;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(255, 200, 200, 0.6);
+}
+
+.joinroom-subtitle {
+  font-size: 1.4rem;
+  margin-bottom: 35px;
+  z-index: 1;
+  color: #d0e6ff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 5px rgba(200, 200, 255, 0.4);
+}
+
+.joinroom-box {
+  background: rgba(30, 30, 30, 0.85); /* dark solid box, no blur */
+  padding: 45px 35px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.joinroom-choose {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.mood-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mood-btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  background-color: rgba(50, 50, 50, 0.8); /* subtle background for buttons */
+  color: #fff;
+}
+
+.mood-btn.happy {
+  background: #ffd966; /* brighter happy color */
+  color: #000;
+}
+
+.mood-btn.chill {
+  background: #6ec6ff;
+  color: #000;
+}
+
+.mood-btn.sad {
+  background: #a366ff;
+  color: #fff;
+}
+
+.mood-btn.active {
+  box-shadow: 0 0 20px 5px rgba(255,255,255,0.7);
+  transform: scale(1.1);
+}
+
+.joinroom-button {
+  padding: 14px 38px;
+  font-size: 1.25rem;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ff7eb3, #ff758c);
+  color: #fff;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(255, 100, 150, 0.6);
+}
+
+.joinroom-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 100, 150, 0.8);
+}
+
+/* Responsive */
+@media screen and (max-width: 480px) {
+  .joinroom-title {
+    font-size: 2rem;
+  }
+  .joinroom-box {
+    width: 90%;
+    padding: 30px 20px;
+  }
+  .mood-btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+  .joinroom-button {
+    padding: 12px 28px;
+    font-size: 1rem;
+  }
+}

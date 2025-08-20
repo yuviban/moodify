@@ -1,0 +1,182 @@
+/* Body & container remain the same */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: 'Montserrat', Arial, sans-serif;
+  color: #fff;
+}
+
+.room-container {
+  min-height: 100vh;
+  width: 100vw;
+  padding-top: 90px;
+  background: center center / cover no-repeat fixed;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.room-box {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  width: 92vw;
+  max-width: 1200px;
+  height: 72vh; /* fix the height */
+  margin: 0 auto;
+  padding: 36px 24px;
+  background: rgba(20, 30, 20, 0.55);
+  border-radius: 20px;
+  border: 1px solid rgba(34, 50, 34, 0.3);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden; /* prevent growing */
+}
+
+/* Music Player */
+.music-player {
+  flex: 1;
+  background: rgba(25, 40, 25, 0.45);
+  border-radius: 15px;
+  padding: 26px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #eae5d5;
+  min-width: 0;
+  border: 1px solid rgba(200, 180, 150, 0.2);
+}
+
+.music-player h2 {
+  color: #e2b97c; /* soft warm gold */
+  font-weight: 600;
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.music-player p {
+  color: #f0e9d8;
+  font-size: 1.1rem;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.music-player button {
+  background: linear-gradient(90deg, #e2b97c 0%, #b8854c 100%);
+  color: #1c1c1c;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.music-player button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}
+
+.progress-bar {
+  width: 100%;
+  max-width: 280px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin: 18px 0;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b8854c 20%, #e2b97c 80%);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+/* Chat */
+.chat-container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(25, 40, 25, 0.45);
+  border-radius: 15px;
+  border: 1px solid rgba(200, 180, 150, 0.2);
+  color: #eae5d5;
+  overflow: hidden; /* keep scroll inside */
+}
+
+.chat-container h3 {
+  padding: 18px 0;
+  color: #e2b97c;
+  background: rgba(20, 30, 20, 0.35);
+  border-bottom: 1px solid rgba(200, 180, 150, 0.2);
+  font-weight: 600;
+  font-size: 1.3rem;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.chat-messages {
+  flex: 1; /* take all remaining height */
+  overflow-y: auto; /* enable vertical scroll */
+  padding: 15px 12px 7px;
+  background: transparent;
+}
+.chat-messages p {
+  background: rgba(200, 180, 150, 0.08);
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  color: #f0e9d8;
+  font-size: 1rem;
+  font-weight: 400;
+  border-left: 4px solid #b8854c;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  background: rgba(20, 30, 20, 0.35);
+  border-top: 1px solid rgba(200, 180, 150, 0.2);
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 25px;
+  border: 1px solid rgba(200, 180, 150, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f0e9d8;
+  font-size: 1rem;
+  font-weight: 400;
+}
+.chat-input input::placeholder {
+  color: #e2b97c;
+  opacity: 0.8;
+}
+
+.chat-input button {
+  background: linear-gradient(90deg, #b8854c 0%, #e2b97c 100%);
+  color: #1c1c1c;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.chat-input button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}

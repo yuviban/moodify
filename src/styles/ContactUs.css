@@ -1,0 +1,163 @@
+/* ---------------- Background Container ---------------- */
+.contact-container {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: no-repeat center center;
+  background-size: cover;
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* ---------------- Contact Box ---------------- */
+.contact-box {
+  background: rgba(0,0,0,0.3);
+  border-radius: 25px;
+  padding: 20px 25px; /* reduced padding */
+  max-width: 450px;
+  width: 100%;
+  max-height: 85vh; /* prevent overlapping navbar */
+  overflow-y: auto; /* scroll inside box if content exceeds */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* ---------------- Heading ---------------- */
+.contact-box h1 {
+  font-size: 1.8rem;
+  color: #f0f0f0;
+  margin-bottom: 12px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+  line-height: 1.2;
+}
+
+/* ---------------- Paragraph ---------------- */
+.contact-box p {
+  font-size: 0.95rem;
+  color: #e0e0e0;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  line-height: 1.5;
+}
+
+/* ---------------- Form Elements ---------------- */
+.contact-box input,
+.contact-box textarea {
+  width: 100%;
+  padding: 10px 12px; /* reduced padding */
+  margin-bottom: 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.95rem;
+  font-family: "Poppins", sans-serif;
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.contact-box input::placeholder,
+.contact-box textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.contact-box input:focus,
+.contact-box textarea:focus {
+  border-color: #88c057;
+  box-shadow: 0 0 8px rgba(136, 192, 87, 0.6);
+}
+
+.contact-box textarea {
+  resize: none;
+  min-height: 100px; /* smaller height */
+}
+
+/* ---------------- Button ---------------- */
+.contact-box button {
+  width: 100%;
+  padding: 10px 20px; /* smaller padding */
+  border-radius: 18px;
+  border: none;
+  background: #88c057;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.contact-box button:hover {
+  background: #6fa84d;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------------- Responsive ---------------- */
+@media screen and (max-width: 768px) {
+  .contact-box {
+    max-width: 400px;
+    padding: 18px 22px;
+  }
+
+  .contact-box h1 {
+    font-size: 1.6rem;
+  }
+
+  .contact-box p {
+    font-size: 0.9rem;
+  }
+
+  .contact-box input,
+  .contact-box textarea,
+  .contact-box button {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .contact-box {
+    max-width: 90%;
+    padding: 15px 18px;
+  }
+
+  .contact-box h1 {
+    font-size: 1.4rem;
+  }
+
+  .contact-box p {
+    font-size: 0.85rem;
+  }
+
+  .contact-box input,
+  .contact-box textarea,
+  .contact-box button {
+    font-size: 0.85rem;
+    padding: 6px 8px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .contact-box h1 {
+    font-size: 1.3rem;
+  }
+
+  .contact-box p {
+    font-size: 0.8rem;
+  }
+
+  .contact-box input,
+  .contact-box textarea,
+  .contact-box button {
+    font-size: 0.8rem;
+    padding: 5px 6px;
+  }
+}

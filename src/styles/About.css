@@ -1,0 +1,120 @@
+/* Container */
+.about-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  overflow: hidden; /* fixes scrollbars */
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+  text-align: center;
+  padding: 0 20px;
+  box-sizing: border-box; /* include padding in width */
+}
+
+/* Overlay */
+.about-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+/* Content Box */
+.about-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  max-height: 65vh;       /* reduced height to avoid navbar overlap */
+  background: rgba(0, 0, 0, 0.25);
+  padding: 25px 20px;     /* smaller padding */
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;       /* scroll if content exceeds max-height */
+}
+
+/* Title */
+.about-title {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+/* Text */
+.about-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  color: #f0f0f0;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Join Room Button */
+.join-room-btn {
+  background: #ff6b81;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 129, 0.5);
+}
+
+.join-room-btn:hover {
+  background: #ff4b61;
+  transform: translateY(-3px);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .about-content {
+    padding: 20px 15px;
+    max-height: 60vh;
+  }
+
+  .about-title {
+    font-size: 1.9rem;
+  }
+
+  .about-text {
+    font-size: 1rem;
+  }
+
+  .join-room-btn {
+    padding: 8px 20px;
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .about-content {
+    padding: 15px 10px;
+    max-height: 55vh;
+  }
+
+  .about-title {
+    font-size: 1.6rem;
+  }
+
+  .about-text {
+    font-size: 0.95rem;
+  }
+
+  .join-room-btn {
+    padding: 6px 18px;
+    font-size: 0.9rem;
+  }
+}
