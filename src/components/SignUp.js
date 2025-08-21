@@ -15,7 +15,7 @@ const SignUp = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://moodify-api-ol0l.onrender.com/api/auth/signup", {
+      const response = await fetch("https://backend-production-7b07.up.railway.app//api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ firstName, lastName, username, email, password }),

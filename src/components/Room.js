@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import "../styles/Room.css";
 
-const socket = io("https://moodify-api-ol0l.onrender.com"); // change port if different
+const socket = io("https://backend-production-7b07.up.railway.app"); // change port if different
 
 const Room = () => {
   const location = useLocation();
@@ -55,7 +55,7 @@ const Room = () => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
 
-    audio.src = `https://moodify-api-ol0l.onrender.com${songData.url}`;
+    audio.src = `https://backend-production-7b07.up.railway.app${songData.url}`;
     audio.currentTime = Math.max((Date.now() - new Date(songData.startTime).getTime()) / 1000, 0);
     audio.play().catch((err) => console.log("Autoplay blocked:", err));
   };

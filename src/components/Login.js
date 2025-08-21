@@ -22,7 +22,7 @@ const Login = () => {
     e.preventDefault();
     setMessage(""); // reset before submit
     try {
-      const res = await fetch("https://moodify-api-ol0l.onrender.com/api/auth/login", {
+      const res = await fetch("https://backend-production-7b07.up.railway.app/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
